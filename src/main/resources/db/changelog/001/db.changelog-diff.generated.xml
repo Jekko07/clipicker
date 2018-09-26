@@ -1,0 +1,73 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="marco (generated)" id="1534612795080-1">
+        <createTable tableName="announce_types">
+            <column name="announcement_id" type="BIGINT"/>
+            <column name="person_code" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1534612795080-2">
+        <createTable tableName="announcements">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(64)"/>
+            <column name="description" type="VARCHAR(100)"/>
+            <column name="location" type="VARCHAR(100)"/>
+            <column name="start_time" type="BIGINT"/>
+            <column name="expire_time" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1534612795080-3">
+        <createTable tableName="clinic_specializations">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="clinic_id" type="BIGINT"/>
+            <column name="spec_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1534612795080-4">
+        <createTable tableName="clinics">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="username" type="VARCHAR(20)"/>
+            <column name="password" type="VARCHAR(20)"/>
+            <column name="email" type="VARCHAR(30)"/>
+            <column name="nickname" type="VARCHAR(20)"/>
+            <column name="name" type="VARCHAR(20)"/>
+            <column name="status" type="SMALLINT"/>
+            <column name="created_time" type="BIGINT"/>
+            <column name="updated_time" type="BIGINT"/>
+            <column name="last_login_time" type="BIGINT"/>
+            <column name="is_online" type="SMALLINT"/>
+            <column name="is_admin" remarks="added table for superuser" type="SMALLINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1534612795080-5">
+        <createTable tableName="person_code">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(64)"/>
+            <column name="age_min" type="SMALLINT"/>
+            <column name="age_max" type="SMALLINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1534612795080-6">
+        <createTable tableName="spec">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(64)"/>
+            <column name="description" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1534612795080-7">
+        <createTable tableName="spec_symptom_cat">
+            <column name="spec_id" type="BIGINT"/>
+            <column name="symptom_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

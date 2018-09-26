@@ -1,0 +1,285 @@
+<h1 id="clipicker-app">CliPicker app</h1>
+<h3 id="stack-">Stack:</h3>
+<hr>
+<ul>
+  <li>Frontend - vuejs, quasar, cordova</li>
+  <li>Backend - java, mysql</li>
+  <li>Server - nginx</li>
+</ul>
+<h3 id="setup">Setup</h3>
+<hr>
+<p>Install the following:</p>
+<ul>
+  <li>JDK1.8</li>
+  <li>Maven</li>
+  <li>MySQL</li>
+  <li>nodejs</li>
+  <li>vue-cli</li>
+  <li>quasar-cli</li>
+  <li>Android SDK</li>
+  <li>cordova</li>
+  <li>STS/Eclipse/Intellij for backend IDE</li>
+  <li>VSCode</li>
+</ul>
+<h3 id="todo-">Todo:</h3>
+<hr>
+<ul>
+  <li>[ ] Backend
+    <ul>
+      <li>[x] Setup spring-boot project structure</li>
+      <li>[ ] Create user authentication API (token) - spring-boot, security, oauth2
+        <ul>
+          <li>[ ] Registration
+            <ul>
+              <li>[ ] Social Registration (google/facebook/twitter/linkedin)
+                <ul>
+                  <li>[ ] add set password (used for normal login) -&gt; authenticate against database</li>
+                  <li>[ ] get other fields frm social info and save data user info to database (name, age, location, address, map, etc.)</li>
+                </ul>
+              </li>
+              <li>[ ] Normal Registration
+                <ul>
+                  <li>[ ] Register via normal fields -&gt; with mail verification send email confirmation link to verify the user</li>
+                  <li>[ ] add set password (used for normal login) -&gt; authenticate against database</li>
+                  <li>[ ] save data user info to database (name, age, location, address, map, etc.)</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>[ ] Login
+            <ul>
+              <li>[ ] user/password (normal login)</li>
+              <li>[ ] social login</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>[ ] Classify User Dashboard (clinic/admin)
+        <ul>
+          <li>[ ] check clinics table (default: is_admin = 0) -&gt; clinic</li>
+          <li>[ ] else (is_admin = 1) -&gt; admin</li>
+        </ul>
+      </li>
+      <li>[ ] Simply implement the Find, Add, Edit, Delete service logic for tables (clinics, specs, symptoms, spec_symptom_cat)</li>
+    </ul>
+  </li>
+  <li>[ ] Frontend
+    <ul>
+      <li>[x] Initialized quasar project inside spring-boot project directory</li>
+      <li>[ ] Create User Login/Registration Page - quasar</li>
+      <li>[ ] Create Dashboard (UI)
+        <ul>
+          <li>[ ] For Admin Menu
+            <ul>
+              <li>[ ] Clinics
+                <ul>
+                  <li>[ ] can add clinic -&gt; without mail verification -&gt; automatic verified</li>
+                  <li>[ ] can edit, delete clinic</li>
+                  <li>[ ] modify clinic map</li>
+                  <li>[ ] can customized specialization of the clinic and tag the clinic</li>
+                </ul>
+              </li>
+              <li>[ ] Symptoms
+                <ul>
+                  <li>[ ] can add, edit, delete symptoms</li>
+                </ul>
+              </li>
+              <li>[ ] Specialization
+                <ul>
+                  <li>[ ] can add, edit, delete specialization</li>
+                  <li>[ ] can map symptoms to specializations</li>
+                </ul>
+              </li>
+              <li>[ ] Announcements
+                <ul>
+                  <li>[ ] can add, edit, delete/expired announcements</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>[ ] For Clinic Menu
+            <ul>
+              <li>[ ] Information
+                <ul>
+                  <li>[ ] Tabs
+                    <ul>
+                      <li>[ ] Clinic Info
+                        <ul>
+                          <li>[ ] can edit clinic</li>
+                          <li>[ ] can customized specialization of the clinic and tag the clinic</li>
+                          <li>[ ] modify clinic map</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>[ ] For Normal/Guest User Menu
+            <ul>
+              <li>[ ] Clinics Nearby
+                <ul>
+                  <li>[ ] show only the maps with clinic markers</li>
+                  <li>[ ] get the directions from current location to clinic</li>
+                </ul>
+              </li>
+              <li>[ ] Announcements
+                <ul>
+                  <li>[ ] show incoming/unexpired announcements</li>
+                  <li>[ ] enable notification -&gt; cordova plugin notification</li>
+                  <li>[ ] Filter notification
+                    <ul>
+                      <li>[ ] Is it only for (Male, Female, Children or Senior,default-for ALL)</li>
+                      <li>[ ] Display what is only in the current/nearby location of the user (500 meter radius).</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+<hr />
+<h3>For Local Development:</h3>
+<strong> Project Structure </strong> <br />
+<div> clipicker:  <br />
+  <ul>
+    <li> Frontend sourcecode
+      <ul>
+        <li>src/main/clipicker-fe</li>
+      </ul>
+    </li>
+    <li> Backend sourcecode
+      <ul>
+        <li>src/main/java</li>
+        <li>src/main/resources</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<div>
+  <strong>Project Local setup: </strong> <br />
+  <ul>
+    <li> Install MySQL
+      <ul>
+        <li>Create super root user with following credentials
+          <ul>
+            <li>username: root</li>
+            <li>password: root</li>
+          </ul>
+        </li>
+        <li> Create empty database with below name
+          <ul>
+            <li>name: clipicker</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li> Running the frontend and backend app
+      <ul>
+        <li> Open the clipicker project in IDE </li>
+
+        <li> Running the frontend clipicker vue app
+          <ul>
+            <li> goto the clipicker-fe directory </li>
+            <li> and hit the below command:
+              <ul>
+                <li>yarn dev</li>
+              </ul>
+            <li> this will open a browser automatically with the url http://localhost:1818 </li>
+            </li>
+          </ul>
+        </li>
+
+        <li> Running the backend API service app
+          <ul>
+            <li> open the ClipickerApplication.java inside the IDE and click Run or execute it </li>
+            <li> upon running ClipickerApplication it will migrate the schema tables </li>
+            <li> after the backend application has started the port http://localhost:2018 will be serve </li>
+            <li> do some test by going to the URL http://localhost:2018/api/test if it display "CliPicker backend API has successfully started!"  </li>
+          </ul>
+        </li>
+
+
+
+        <li> Use webserver to serve this 2 running apps (CliPicker Frontend and CliPicker Backend API)
+          <ul>
+            <li>Since both apps are already running we need to have same DNS in order to prevent
+              several issues like CSRF and CORS when communicating with each other. Hence, both of them need to be in same domain name (DNS).  </li>
+            <li>DNS for local development like localhost we use <strong>clipicker</strong> as server_name --> this will serve under http://clipicker</li>
+            <li> Append new dns entry in the hosts file as Administrator with below content
+                <ul>
+                  <li>127.0.0.1 clipicker</li>
+                </ul>
+            </li>
+            <li>For Windows OS the file was located under -> C:\Windows\System32\drivers\etc\hosts </li>
+            <li>For linux OS the file was located under -> /etc/hosts </li>
+            <li>This should look like this
+                <ul>
+                  <li>
+                    <img src="https://i.imgur.com/EkIpBvG.png" alt="">
+                  </li>
+                </ul>
+            </li>
+
+            <li> After the DNS was created we can now use this as our server name in our local development purposes</li>
+            <li> For Windows we will use NGINX proxy webserver -> it is used for serving static files and reverse proxy app services  </li>
+            <li> Download NGINX -> for Windows -> http://nginx.org/download/nginx-1.15.2.zip</li>
+            <li> For Linux OS -> you just have to install via -> apt-get package manager -> sudo apt-get install nginx or sudo yum install nginx </li>
+            <li> After downloading nginx add new server entry inside the file nginx.conf :
+              <ul>
+                <li>File location -> <nginx_folder>/conf/nginx.conf</li>
+                <li>with below content:</li>
+                <li>
+                  <pre>
+server {
+  listen       80;
+  server_name  clipicker;
+
+  location / {
+    proxy_pass http://127.0.0.1:1818;
+    proxy_buffering off;
+  }
+
+  location /api/ {
+    proxy_pass http://localhost:2018/;
+    proxy_buffering off;
+  }
+
+}
+                  </pre>
+                </li>
+
+                <li> Start the nginx by running nginx.exe for windows </li>
+                <li> Start the nginx by running sudo service nginx reload for Linux OS </li>
+                <li> Then thats't it</li>
+                <li> The CliPicker App is available now via http://clipicker
+                  <ul>
+                    <li>
+                      <img src="https://glcdn.githack.com/clipicker.dev/clipicker/raw/master/demo1.gif" alt="">
+                    </li>
+                  </ul>
+
+
+                </li>
+
+
+              </ul>
+
+            </li>
+          </ul>
+
+
+        </li>
+      </ul>
+
+
+    </li>
+  </ul>
+
+</div>

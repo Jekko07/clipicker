@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="marco (generated)" id="1537350593736-1">
+        <addColumn tableName="clinics">
+            <column defaultValueNumeric="1" name="all_spec_services" type="SMALLINT(5)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1537350593736-2">
+        <addColumn tableName="clinics">
+            <column name="all_symptom_services" type="SMALLINT(5)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1537420009810-1">
+        <addDefaultValue columnDataType="smallint(5)" columnName="all_symptom_services" defaultValueNumeric="1" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1537452959250-1">
+        <addColumn tableName="clinics">
+            <column defaultValue="00:00" name="bus_start_time" type="VARCHAR(6 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1537452959250-2">
+        <addColumn tableName="clinics">
+            <column defaultValue="00:00" name="bus_end_time" type="VARCHAR(6 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1537496252760-1">
+        <addDefaultValue columnDataType="smallint(5)" columnName="status" defaultValueNumeric="0" tableName="clinics"/>
+    </changeSet>
+</databaseChangeLog>

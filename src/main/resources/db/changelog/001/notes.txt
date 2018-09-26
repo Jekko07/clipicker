@@ -1,0 +1,82 @@
+START
+
+========
+clinics:
+id
+username
+password
+email
+nickname
+name
+status
+created_time
+updated_time
+last_login_time
+is_online
+is_admin (added table for superuser)
+
+is_admin column:
+0 = capable to login as clinic, update their information and its location or marker in the map
+1 = capable same as 0 , remove clinic and capable to manage announcement (add, update) if expired na ang announcement.
+
+spec: (General Practitioner, Geneologist, etc)
+id
+name
+description
+
+
+spec_symptom_cat: (map what type of specializations the symptoms belong)
+spec_id
+symptom_id
+
+
+clinic_specializations:
+id
+clinic_id
+spec_id
+
+person_code: (all, male, female, senior, baby, teenagers,highschool,gradeschool,etc.)
+id
+name
+age_min
+age_max
+
+
+
+announcements:
+id
+name
+description
+location
+start_time
+expire_time
+
+
+announce_types: (tag what announcement for particular gender applies)
+announcement_id
+person_code_id
+
+
+==============
+END.
+
+
+
+
+# helpful queries:
+
+/*
+
+create database clipicker;
+drop database if exists clipicker;
+drop database if exists clipicker_ref;
+drop user if exists 'clipicker_app_user'@'localhost';
+*/
+
+# !-- create user and use it in the app -->
+/*GRANT ALL PRIVILEGES ON clipicker.* to clipicker_app_user@'%' identified by '123456';
+GRANT ALL PRIVILEGES ON clipicker_ref.* to clipicker_app_user@'%' identified by '123456';*/
+
+
+/*drop database if exists clipicker;
+drop user if exists 'clipicker_app_user'@'localhost';*/

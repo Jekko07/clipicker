@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.clipicker.me.dao.mapper.ClinicMapper">
+  <select id="list" resultType="com.clipicker.me.domain.Clinic" parameterType="java.util.Map">
+    select * from clinics
+    <where>
+      <if test="name != null">
+        name like CONCAT('%',#{name},'%')
+      </if>
+      <if test="status != null">
+        and status = #{status}
+      </if>
+      <if test="status == null">
+        and status = 1
+      </if>
+    </where>
+    order by name
+  </select>
+
+  <select id="loadClinic" parameterType="java.lang.String" resultType="com.clipicker.me.domain.Clinic">
+    select * from clinics
+    where email = #{email}
+  </select>
+
+  <insert id="insert" parameterType="com.clipicker.me.domain.Clinic">
+    INSERT INTO clinics (email,
+                         username,
+                         name,
+                         address,
+                         lat,
+                         lng,
+                         contact_number,
+                         bus_start_time,
+                         bus_end_time)
+    VALUES (#{email}, #{username}, #{name}, #{address}, #{lat}, #{lng}, #{contactNumber}, #{busStartTime}, #{busEndTime})
+  </insert>
+
+  <update id="update" parameterType="com.clipicker.me.domain.Clinic">
+    UPDATE clinics
+    SET name           = #{name},
+        address         = #{address},
+        lat             = #{lat},
+        lng             = #{lng},
+        contact_number  = #{contactNumber},
+        bus_start_time = #{busStartTime},
+        bus_end_time = #{busEndTime}
+    WHERE email = #{email}
+  </update>
+
+  <delete id="delete" parameterType="java.lang.String">
+    delete from clinics where email = #{email}
+  </delete>
+
+    <insert id="insertSpecService" parameterType="com.clipicker.me.domain.ClinicServiceOffer">
+        INSERT INTO clinic_spec_service (spec_id, clinic_id)
+        VALUES
+          <foreach collection="specIdList" item="item" index="index" open="(" separator="),(" close=")">
+              #{item},
+              #{clinicId}
+          </foreach>
+    </insert>
+
+
+    <insert id="insertSymptomService" parameterType="com.clipicker.me.domain.ClinicServiceOffer">
+        INSERT INTO clinic_symptom_service (symptom_id, clinic_id)
+        VALUES
+          <foreach collection="symptomIdList" item="item" index="index" open="(" separator="),(" close=")">
+              #{item},
+              #{clinicId}
+          </foreach>
+    </insert>
+
+
+    <delete id="deleteSpecService" parameterType="java.lang.Long">
+        DELETE FROM clinic_spec_service
+        WHERE clinic_id = #{clinic_id}
+    </delete>
+
+    <delete id="deleteSymptomService" parameterType="java.lang.Long">
+        DELETE FROM clinic_symptom_service
+        WHERE clinic_id = #{clinic_id}
+    </delete>
+
+    <update id="updateClinicServiceFlag" parameterType="java.util.Map">
+      update clinics
+        set all_spec_services = #{isAllSpec}, all_symptom_services = #{isAllSymptom}
+      where id = #{clinicId}
+    </update>
+
+    <select id="loadSpecService" parameterType="java.lang.Long" resultType="java.lang.Long">
+      select spec_id from clinic_spec_service where clinic_id = #{clinicId}
+    </select>
+
+    <select id="loadSymptomService" parameterType="java.lang.Long" resultType="java.lang.Long">
+      select symptom_id from clinic_symptom_service where clinic_id = #{clinicId}
+    </select>
+
+    <update id="activate" parameterType="java.lang.Long">
+      update clinics set status = 1 where id = #{id}
+    </update>
+
+</mapper>

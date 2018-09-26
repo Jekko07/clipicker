@@ -1,0 +1,80 @@
+// app global css
+
+@import '~variables'
+
+
+dark-text()
+  color $darkColor !important
+
+dark-background()
+  background $darkColor !important
+
+white-text()
+  color $whiteColor !important
+
+white-background()
+  background $whiteColor !important
+
+#q-app
+  /*white-text()
+  dark-background()*/
+
+.modal-content
+  /*dark-background()
+  white-text()
+  .q-option-label
+    white-text()*/
+.modal-buttons button
+  dark-background()
+  white-text()
+
+.q-btn, .q-tab
+  text-transform capitalize
+
+
+.text-clipicker-brand
+  color $brandColor
+
+.bg-clipicker-brand
+  background $brandColor
+
+.text-linkedin-color
+  color #0073b1
+.bg-linkedin-color
+  background #0073b1
+
+.text-facebook-color
+  color #405d9a
+.bg-facebook-color
+  background #405d9a
+
+.text-twitter-color
+  color #1da1f2
+.bg-twitter-color
+  background #1da1f2
+
+.text-github-color
+  color #2b3137
+.bg-github-color
+  background #2b3137
+
+okta-bg-color-fn()
+  background-color $brandColor !important
+  background -webkit-linear-gradient($brandColor, $brandColor) !important
+  background linear-gradient($brandColor, $brandColor) !important
+  border-color #2A572A !important
+  border-bottom-color #00456a !important
+
+okta-color-fn()
+  color $brandColor
+
+
+#okta-sign-in .registration-container .registration-link
+  okta-color-fn()
+
+#okta-sign-in .beacon-loading:after
+  border-top-color: $brandColor
+
+#okta-sign-in.auth-container .okta-form-input-field.focused-input
+  border-color $brandColor
+

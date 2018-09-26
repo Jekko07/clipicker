@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="marco (generated)" id="1536727114613-1">
+        <sql>
+          ALTER TABLE announcements MODIFY start_time timestamp DEFAULT current_timestamp;
+          ALTER TABLE announcements MODIFY expire_time timestamp DEFAULT current_timestamp;
+        </sql>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536740510907-1">
+        <sql>
+            ALTER TABLE announcements MODIFY start_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP;
+            ALTER TABLE announcements MODIFY expire_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+            ALTER TABLE announcements MODIFY name varchar(128);
+            ALTER TABLE announcements MODIFY description varchar(256);
+            ALTER TABLE announcements MODIFY location varchar(256);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

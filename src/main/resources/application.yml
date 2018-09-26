@@ -1,0 +1,127 @@
+server:
+  port: 2018
+  servlet:
+    context-path: /
+
+jdbc:
+  database: clipicker
+  driver: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/${jdbc.database}?autoReconnect=true&verifyServerCertificate=false&useSSL=false
+  user: clipicker_app_user
+  password: 123456
+  liquibase:
+      url: jdbc:mysql://localhost:3306/?autoReconnect=true&verifyServerCertificate=false&useSSL=false
+
+spring:
+  liquibase:
+    url: ${jdbc.url}
+    user: ${jdbc.user}
+    password: ${jdbc.password}
+    change-log: classpath:db/db.changelog-master.xml
+    enabled: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: ${jdbc.url}
+    username: ${jdbc.user}
+    password: ${jdbc.password}
+    hikari:
+      connection-test-query: "SELECT 1"
+      connection-timeout: 60000
+      maximum-pool-size: 12
+      max-lifetime: 1200000
+
+# oauth security using okta
+okta:
+  client:
+    org-url: https://dev-180609.oktapreview.com
+  oauth2:
+    issuer: ${okta.client.org-url}/oauth2/default
+    client-id: 0oag10n6natLlZEGu0h7
+    audience: api://default
+    scope-claim: scp
+    roles-claim: groups
+
+application:
+  okta:
+    api-token: 00TgX_PMihoAeES_jjOyuUNNPb27uccF_BKTS9C8ak
+    base-url: ${okta.client.org-url}
+    register-url: ${okta.client.org-url}/api/v1/users?activate=true
+
+---
+
+# mybatis
+mybatis:
+  type-aliases-package: com.clipicker.me.clipicker.dao.mapper
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+---
+
+# Current Active profile
+spring.profiles.active: initial
+
+---
+
+# specific configurations for initial setup environment of DB
+# only set active to initial during first run of the project
+spring:
+  profiles: initial
+jdbc:
+  user: root
+  password: root
+
+---
+
+# specific configurations for Development environment
+spring:
+  profiles: dev
+
+---
+
+# specific configurations for Production environment
+spring.profiles: prod
+
+jdbc:
+  database: clipicker
+  driver: com.mysql.jdbc.Driver
+  url: jdbc:mysql://clipicker_db:3306/${jdbc.database}?autoReconnect=true&verifyServerCertificate=false&useSSL=false
+  user: clipicker_app_user
+  password: "PK7p!bYq5#2au#!!UN"
+
+spring:
+  liquibase:
+    url: ${jdbc.url}
+    user: ${jdbc.user}
+    password: ${jdbc.password}
+    change-log: classpath:db/db.changelog-master.xml
+    enabled: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: ${jdbc.url}
+    username: ${jdbc.user}
+    password: ${jdbc.password}
+    hikari:
+      connection-test-query: "SELECT 1"
+      connection-timeout: 60000
+      maximum-pool-size: 12
+      max-lifetime: 1200000
+
+# oauth security using okta
+okta:
+  client:
+    org-url: https://dev-553248.oktapreview.com
+  oauth2:
+    issuer: ${okta.client.org-url}/oauth2/default
+    client-id: 0oag6zo1jsChhPVgT0h7
+    audience: api://default
+    scope-claim: scp
+    roles-claim: groups
+
+application:
+  okta:
+    api-token: 00kOkWq4aYDxWHM1aMLTSN1NXmWZ1oSNgxRTCwP-vs
+    base-url: ${okta.client.org-url}
+    register-url: ${okta.client.org-url}/api/v1/users?activate=true

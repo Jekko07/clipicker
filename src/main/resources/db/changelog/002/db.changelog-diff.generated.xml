@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="marco (generated)" id="1535948951972-1">
+        <addColumn tableName="clinics">
+            <column name="address" type="VARCHAR(120 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1535948951972-2">
+        <addColumn tableName="clinics">
+            <column name="lat" type="DOUBLE(22)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1535948951972-3">
+        <addColumn tableName="clinics">
+            <column name="lng" type="DOUBLE(22)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1535948951972-4">
+        <addColumn tableName="clinics">
+            <column name="contact_number" type="VARCHAR(32 BYTE)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1535948951972-5">
+        <dropColumn columnName="nickname" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1535948951972-6">
+        <dropColumn columnName="password" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1535948951972-7">
+        <addDefaultValue columnDataType="smallint(5)" columnName="status" defaultValueNumeric="1" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1535965271207-1">
+        <sql>
+            ALTER TABLE clinics MODIFY created_time timestamp DEFAULT current_timestamp;
+            ALTER TABLE clinics MODIFY updated_time timestamp DEFAULT current_timestamp;
+            ALTER TABLE clinics MODIFY last_login_time timestamp DEFAULT current_timestamp;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

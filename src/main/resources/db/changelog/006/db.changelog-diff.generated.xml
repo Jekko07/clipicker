@@ -1,0 +1,84 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="marco (generated)" id="1536891222844-1">
+        <addUniqueConstraint columnNames="email" constraintName="idx_email" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536891222844-2">
+        <createIndex indexName="idx_name" tableName="announcements">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536891222844-3">
+        <createIndex indexName="idx_name" tableName="clinics">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536891222844-4">
+        <createIndex indexName="idx_name" tableName="spec">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536891222844-5">
+        <createIndex indexName="idx_name" tableName="symptoms">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536891222844-6">
+        <dropTable tableName="person_code"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536891222844-7">
+        <dropTable tableName="spec_symptom_cat"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-1">
+        <createTable tableName="clinic_spec_service">
+            <column name="spec_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clinic_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-2">
+        <createTable tableName="clinic_symptom_service">
+            <column name="symptom_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clinic_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-3">
+        <addPrimaryKey columnNames="spec_id, clinic_id" constraintName="PRIMARY" tableName="clinic_spec_service"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-4">
+        <addPrimaryKey columnNames="symptom_id, clinic_id" constraintName="PRIMARY" tableName="clinic_symptom_service"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-5">
+        <createIndex indexName="idx_clinic" tableName="clinic_spec_service">
+            <column name="clinic_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-6">
+        <createIndex indexName="idx_clinic" tableName="clinic_symptom_service">
+            <column name="clinic_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-7">
+        <createIndex indexName="idx_spec" tableName="clinic_spec_service">
+            <column name="spec_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-8">
+        <createIndex indexName="idx_symptom" tableName="clinic_symptom_service">
+            <column name="symptom_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-9">
+        <dropTable tableName="announce_types"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536897524080-10">
+        <dropTable tableName="clinic_specializations"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,23 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1" author="marco">
+      <sql>
+        <!--# this is for development purposes -> development database-->
+        CREATE DATABASE IF NOT EXISTS clipicker DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+        <!--# this is for reference database to use when migrating from different database -> to any database-->
+        <!-- run mvn liquibase:diff to generate the difference between reference DB against working DB -->
+        CREATE DATABASE IF NOT EXISTS clipicker_ref DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+        <!-- create user and use it in the app -->
+        GRANT ALL PRIVILEGES ON clipicker.* to clipicker_app_user@'%' identified by '123456';
+        GRANT ALL PRIVILEGES ON clipicker_ref.* to clipicker_app_user@'%' identified by '123456';
+      </sql>
+    </changeSet>
+</databaseChangeLog>
+

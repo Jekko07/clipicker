@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.clipicker.me.dao.mapper.SpecializationMapper">
+    <select id="list" resultType="com.clipicker.me.domain.Specialization" parameterType="java.util.Map">
+      select * from spec
+      <where>
+        <if test="name != null">
+          name like CONCAT('%',#{name},'%')
+        </if>
+      </where>
+      order by name
+    </select>
+
+    <select id="loadSpecialization" parameterType="java.lang.Long" resultType="com.clipicker.me.domain.Specialization">
+      select *
+      from spec
+      where id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.clipicker.me.domain.Specialization">
+      INSERT INTO spec (name,
+                           description)
+      VALUES (#{name}, #{description})
+    </insert>
+
+    <update id="update" parameterType="com.clipicker.me.domain.Specialization">
+      UPDATE spec
+      SET name           = #{name},
+          description         = #{description}
+      WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+      delete from spec where id = #{id}
+    </delete>
+
+</mapper>

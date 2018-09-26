@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="marco (generated)" id="1536078969161-1">
+        <modifyDataType columnName="email" newDataType="varchar(100)" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536079813613-1">
+        <modifyDataType columnName="address" newDataType="varchar(256)" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536079813613-2">
+        <modifyDataType columnName="email" newDataType="varchar(128)" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536079813613-3">
+        <modifyDataType columnName="name" newDataType="varchar(128)" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536079813613-4">
+        <modifyDataType columnName="username" newDataType="varchar(128)" tableName="clinics"/>
+    </changeSet>
+    <changeSet author="marco (generated)" id="1536080059106-1">
+        <addDefaultValue columnDataType="smallint(5)" columnName="is_admin" defaultValueNumeric="0" tableName="clinics"/>
+    </changeSet>
+</databaseChangeLog>

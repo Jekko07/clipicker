@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration>
+  <property resource="logback.properties"></property>
+
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} %-5p [%F:%L] : %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="rolling" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/clipicker.log</file>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %p %C.%M\(%L\) | %m%n</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <maxHistory>30</maxHistory>
+      <FileNamePattern>${LOG_DIR}/backup/clipicker.%d{yyyyMMdd}.gz</FileNamePattern>
+    </rollingPolicy>
+  </appender>
+
+  <logger name="org.apache.commons" level="${APACHE_COMMONS_LEVEL}" />
+  <logger name="org.springframework" level="${SPRING_LEVEL}" />
+  <logger name="com.clipicker.me.dao" level="DEBUG" />
+
+  <root level="${ROOT_LEVEL}">
+    <appender-ref ref="stdout" />
+    <appender-ref ref="rolling" />
+  </root>
+
+</configuration>
