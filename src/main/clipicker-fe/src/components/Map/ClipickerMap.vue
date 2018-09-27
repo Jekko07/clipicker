@@ -22,6 +22,16 @@
           @click="showServicesFilter"
           class="fixed"
           icon="fas fa-filter"
+          style="right: 140px; bottom: 18px; z-index: 999999"
+          v-if="mode === 'interactive'"
+        />
+
+        <q-btn
+          round
+          color="primary"
+          @click="showAllClinics = true"
+          class="fixed"
+          icon="location_on"
           style="right: 75px; bottom: 18px; z-index: 999999"
           v-if="mode === 'interactive'"
         />
@@ -45,10 +55,10 @@
       <!-- element tools to use in a map -> using ref -->
       <div v-show="false">
 
-          <!-- for current location control -->
-          <a  ref="locate-control" @click="showMyCurrentLocation">
-            <i class="q-icon fas fa-map-marker-alt" style="font-size: 2em; z-index: 99999" />
-          </a>
+        <!-- for current location control -->
+        <a  ref="locate-control" @click="showMyCurrentLocation">
+          <i class="q-icon fas fa-map-marker-alt" style="font-size: 2em; z-index: 99999" />
+        </a>
 
         <div>
           <!-- ref for get map directions -->
@@ -80,24 +90,24 @@
 </template>
 
 <script>
-import appConfig from '../../config/app.config';
-import ClinicServicesFilter from '../Clinic/ClinicServicesFilter'
+  import appConfig from '../../config/app.config';
+  import ClinicServicesFilter from '../Clinic/ClinicServicesFilter'
 
-require('leaflet/dist/leaflet.css');
-require('leaflet.fullscreen/Control.FullScreen.css')
-require('leaflet-providers');
-require('leaflet');
-require('leaflet.fullscreen');
+  require('leaflet/dist/leaflet.css');
+  require('leaflet.fullscreen/Control.FullScreen.css')
+  require('leaflet-providers');
+  require('leaflet');
+  require('leaflet.fullscreen');
 
-require('leaflet-routing-machine');
-require('leaflet-routing-machine/dist/leaflet-routing-machine.css')
+  require('leaflet-routing-machine');
+  require('leaflet-routing-machine/dist/leaflet-routing-machine.css')
 
-require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min')
-require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min.css')
+  require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min')
+  require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min.css')
 
-require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers')
-require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers.css')
-require('./controls/LocateControl');
+  require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers')
+  require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers.css')
+  require('./controls/LocateControl');
 
   export default {
     name: "ClipickerMap",
@@ -145,6 +155,7 @@ require('./controls/LocateControl');
 
         // filter for services
         servicesFilterModal: true,
+        showAllClinics: false
 
       }
     },
@@ -163,15 +174,15 @@ require('./controls/LocateControl');
               setTimeout(this.initMap, 1);
             }
           } else {
-            if (this.$store.getters['services/get'].querySearch > 0 && this.opts.clinics && this.opts.clinics.length > 0) {
+            if (this.$store.getters['services/get'].querySearch > 0 && this.opts.clinics && this.opts.clinics.length > 0 && !this.showAllClinics) {
               this.resetInteractiveMode();
               this.interactive.clinics = this.opts.clinics;
               setTimeout(() => {
                 this.resetClinicMarkers();
-                this.showClinicMarkers();
-                this.filterMarkerByDistance();
-                this.$store.dispatch('services/doneQuerySearch');
-              }, 2000);
+              this.showClinicMarkers();
+              this.filterMarkerByDistance();
+              this.$store.dispatch('services/doneQuerySearch');
+            }, 2000);
 
             }
           }
@@ -187,6 +198,24 @@ require('./controls/LocateControl');
 
       showServicesFilterDialog() {
         return this.$store.getters['services/get'].show;
+      },
+    },
+
+    watch: {
+      showAllClinics(isShowAllClinics) {
+        if (!this.isSingleMode()) {
+          if (isShowAllClinics) {
+            this.opts = this.$props.options;
+            this.resetInteractiveMode();
+            this.interactive.clinics = this.opts.clinics;
+            this.$store.dispatch('services/querySearch');
+            setTimeout(() => {
+              this.resetClinicMarkers();
+            this.showClinicMarkers();
+            this.$store.dispatch('services/doneQuerySearch');
+          }, 2000);
+          }
+        }
       }
     },
 
@@ -256,15 +285,15 @@ require('./controls/LocateControl');
         this.map.locate({maxZoom: 16});
         this.map.on('locationfound', (e) => {
           const currentLocationIcon = this.L.icon.pulse({iconSize:[20,20],color:'#487edc'});
-          if (this.currentPlaceMarker != null) {
-            this.currentPlaceMarker.remove();
-          }
-          this.currentLocation = e.latlng;
-          this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
-          this.map.setView(e.latlng, this.defaultZoom);
+        if (this.currentPlaceMarker != null) {
+          this.currentPlaceMarker.remove();
+        }
+        this.currentLocation = e.latlng;
+        this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
+        this.map.setView(e.latlng, this.defaultZoom);
 
 
-        }, this);
+      }, this);
       },
 
 
@@ -272,12 +301,12 @@ require('./controls/LocateControl');
         this.map.locate({maxZoom: 16});
         this.map.on('locationfound', (e) => {
           this.map.flyTo(e.latlng, 16);
-          const currentLocationIcon = this.L.icon.pulse({iconSize:[20,20],color:'#487edc'});
-          if (this.currentPlaceMarker != null) {
-            this.currentPlaceMarker.remove();
-          }
-          this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
-        }, this);
+        const currentLocationIcon = this.L.icon.pulse({iconSize:[20,20],color:'#487edc'});
+        if (this.currentPlaceMarker != null) {
+          this.currentPlaceMarker.remove();
+        }
+        this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
+      }, this);
 
         evt.stopPropagation();
       },
@@ -377,7 +406,7 @@ require('./controls/LocateControl');
       showClinicMarkers() {
         this.interactive.clinics.map(clinic => {
           clinic.marker = this.createMarker([clinic.lat, clinic.lng], clinic);
-        });
+      });
       },
 
       resetClinicMarkers() {
@@ -387,9 +416,9 @@ require('./controls/LocateControl');
 
         this.interactive.clinics.map(clinic => {
           if (clinic.marker) {
-            clinic.marker.remove();
-          }
-        });
+          clinic.marker.remove();
+        }
+      });
       },
 
       getDirections(clinicDestination) {
@@ -428,27 +457,27 @@ require('./controls/LocateControl');
       filterMarkerByDistance() {
         this.interactive.clinics.map(clinic => {
           clinic.distance = this.currentLocation.distanceTo(this.L.latLng(clinic.lat, clinic.lng));
-        })
+      })
         const TOP_SIZE = 5;
         const topNearestClinics = this.interactive.clinics.sort((a, b) => a.distance - b.distance).slice(0, this.interactive.clinics.length > TOP_SIZE ? TOP_SIZE : this.interactive.clinics.length);
 
         this.interactive.clinics.map(clinic => {
-           const hasFound = topNearestClinics.filter(nearestClinic => clinic.id == nearestClinic.id).length > 0;
-          if (!hasFound) {
-            if (clinic.marker) {
-              clinic.marker.remove();
-            }
+          const hasFound = topNearestClinics.filter(nearestClinic => clinic.id == nearestClinic.id).length > 0;
+        if (!hasFound) {
+          if (clinic.marker) {
+            clinic.marker.remove();
           }
-        })
+        }
+      })
 
       },
 
       // end multiple mode ***************************************************************************************************************************************************
 
       showServicesFilter() {
+        this.showAllClinics = false;
         this.$store.dispatch('services/show', true);
       },
-
     }
   }
 </script>
