@@ -35,14 +35,13 @@
         },
         selectedSymptoms: [],
         selectedSpecializations: [],
-        minimizedModal: false,
+        minimizedModal: false
       }
     },
 
     created() {
       this.clipickerMapParam.clinics = [];
       this.clipickerMapParam.load = true;
-      this.showNearbyClinics(true);
     },
 
 
@@ -52,22 +51,17 @@
         return api.guest.nearbyClinic.list(filters);
       },
 
-      showNearbyClinics(isAll) {
-        let filters = {
+      showNearbyClinics() {
+        const filters = {
           symptomIdList: this.$store.getters['services/get'].filter.specIdList.join(','),
           specIdList: this.$store.getters['services/get'].filter.symptomIdList.join(',')
         };
-
-        if (this.$store.getters['services/get'].querySearchAll || isAll) {
-          filters = null;
-        }
 
         this.listClinics(filters)
           .then(response => {
             const data = response.data;
             if (data.success) {
               this.clinics = data.data;
-
 
               this.clinics.map(clinic => {
                 clinic.bus_start_time = this.$clipicker.buildBusTime(clinic.busStartTime, true);
