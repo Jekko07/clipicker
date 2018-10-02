@@ -11,7 +11,15 @@ export default {
     commit('querySearch');
   },
 
+  querySearchAll({ commit }, state) {
+    commit('querySearchAll');
+  },
+
   doneQuerySearch({ commit }) {
     commit('doneQuerySearch');
+  },
+
+  setClinicMaxNearbyDistance({ commit }, distance) {
+    commit('setClinicMaxNearbyDistance', distance);
   }
 }

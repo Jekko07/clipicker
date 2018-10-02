@@ -72,6 +72,7 @@ module.exports = function(ctx) {
                 'QAutocomplete',
                 'QChipsInput',
                 'QSelect',
+                'QSlider'
             ],
             directives: [
                 'Ripple',
