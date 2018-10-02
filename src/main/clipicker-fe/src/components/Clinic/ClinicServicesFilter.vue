@@ -5,29 +5,38 @@
       prevent-close
     >
       <div slot="body">
-        <div class="q-my-md">
-          <q-select
-            multiple
-            chips
-            filter
-            inverted
-            float-label="Pick specializations"
-            v-model="selectedSpecs"
-            :options="specOptions"
-          />
+        <div class="filter-service-wrapper q-mx-md">
+          <div class="q-mt-sm">
+            <q-slider v-model="maxNearbyDistance" :min="0" :max="maxDistance" :label-value="`${maxNearbyDistance} km`" label-always color="light-green" />
+          </div>
+
+          <div class="q-my-sm">
+            <q-select
+              multiple
+              chips
+              filter
+              inverted
+              float-label="Pick specializations"
+              v-model="selectedSpecs"
+              :options="specOptions"
+            />
+          </div>
+
+          <div class="q-my-sm">
+            <q-select
+              multiple
+              chips
+              filter
+              inverted
+              float-label="Pick symptoms"
+              v-model="selectedSymptoms"
+              :options="symptomsOptions"
+            />
+          </div>
+
         </div>
 
-        <div class="q-my-sm">
-          <q-select
-            multiple
-            chips
-            filter
-            inverted
-            float-label="Pick symptoms"
-            v-model="selectedSymptoms"
-            :options="symptomsOptions"
-          />
-        </div>
+
       </div>
       <div slot="buttons" slot-scope="props">
         <div style="float: left">
@@ -51,6 +60,9 @@
 
   export default {
     name: "ClinicServicesFilter",
+    props: [
+      'maxDistance'
+    ],
     data() {
       return {
         specList: [],
@@ -87,6 +99,23 @@
           this.selectedSymptoms = this.$store.getters['services/get'].filter.symptomIdList;
         }
         return this.specListLoaded && this.symptomListLoaded;
+      },
+
+      step() {
+        return Math.ceil((this.$props.maxDistance + 1)/10) * 10;
+      },
+
+      maxNearbyDistance: {
+        get() {
+          const distance = this.$store.getters['services/get'].filter.distance.max;
+          if (distance === 0) {
+            this.$store.dispatch('services/setClinicMaxNearbyDistance', this.maxDistance);
+          }
+          return distance > 0 ? distance : this.maxDistance;
+        },
+        set(newValue) {
+          this.$store.dispatch('services/setClinicMaxNearbyDistance', newValue);
+        }
       }
     },
 
@@ -134,7 +163,10 @@
       search() {
         this.$store.dispatch('services/set', {
           specIdList: this.selectedSpecs,
-          symptomIdList: this.selectedSymptoms
+          symptomIdList: this.selectedSymptoms,
+          distance: {
+            max: this.maxNearbyDistance
+          }
         });
         this.$store.dispatch('services/show', false);
         this.$store.dispatch('services/querySearch');
