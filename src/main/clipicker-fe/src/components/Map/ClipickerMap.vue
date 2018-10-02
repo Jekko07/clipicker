@@ -29,7 +29,7 @@
         <q-btn
           round
           color="primary"
-          @click="showAllClinics = true"
+          @click="queryAllClinics"
           class="fixed"
           icon="location_on"
           style="right: 75px; bottom: 18px; z-index: 999999"
@@ -46,7 +46,7 @@
         />
 
         <div v-if="showServicesFilterDialog">
-          <clinic-services-filter />
+          <clinic-services-filter :max-distance="maxDistance" />
         </div>
 
 
@@ -55,10 +55,10 @@
       <!-- element tools to use in a map -> using ref -->
       <div v-show="false">
 
-        <!-- for current location control -->
-        <a  ref="locate-control" @click="showMyCurrentLocation">
-          <i class="q-icon fas fa-map-marker-alt" style="font-size: 2em; z-index: 99999" />
-        </a>
+          <!-- for current location control -->
+          <a  ref="locate-control" @click="showMyCurrentLocation">
+            <i class="q-icon fas fa-map-marker-alt" style="font-size: 2em; z-index: 99999" />
+          </a>
 
         <div>
           <!-- ref for get map directions -->
@@ -73,6 +73,9 @@
               </div>
               <div class="q-mt-sm">
                 Contact number: {{ clinic.contactNumber }}
+              </div>
+              <div class="q-mt-sm">
+                Distance: {{ clinic.distance ? round(clinic.distance/1000, 2) + ' km' : 'not yet set'  }}
               </div>
             </div>
 
@@ -90,24 +93,24 @@
 </template>
 
 <script>
-  import appConfig from '../../config/app.config';
-  import ClinicServicesFilter from '../Clinic/ClinicServicesFilter'
+import appConfig from '../../config/app.config';
+import ClinicServicesFilter from '../Clinic/ClinicServicesFilter'
 
-  require('leaflet/dist/leaflet.css');
-  require('leaflet.fullscreen/Control.FullScreen.css')
-  require('leaflet-providers');
-  require('leaflet');
-  require('leaflet.fullscreen');
+require('leaflet/dist/leaflet.css');
+require('leaflet.fullscreen/Control.FullScreen.css')
+require('leaflet-providers');
+require('leaflet');
+require('leaflet.fullscreen');
 
-  require('leaflet-routing-machine');
-  require('leaflet-routing-machine/dist/leaflet-routing-machine.css')
+require('leaflet-routing-machine');
+require('leaflet-routing-machine/dist/leaflet-routing-machine.css')
 
-  require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min')
-  require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min.css')
+require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min')
+require('../../statics/js/leaflets/plugins/leaflet-pulse-icon/L.Icon.Pulse.min.css')
 
-  require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers')
-  require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers.css')
-  require('./controls/LocateControl');
+require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers')
+require('../../statics/js/leaflets/plugins/leaflet-awesome-markers/leaflet.awesome-markers.css')
+require('./controls/LocateControl');
 
   export default {
     name: "ClipickerMap",
@@ -129,12 +132,13 @@
 
         // use this object for single clinic use only
         single: {
-          clinic: {}
+          clinic: {},
         },
 
         // use this object for multiple clinics
         interactive: {
           clinics: [],
+          maxDistance: 0,
         },
         routeControl: null,
 
@@ -155,7 +159,8 @@
 
         // filter for services
         servicesFilterModal: true,
-        showAllClinics: false
+        showAllClinics: false,
+        showCurrentLocationError: false
 
       }
     },
@@ -174,16 +179,26 @@
               setTimeout(this.initMap, 1);
             }
           } else {
-            if (this.$store.getters['services/get'].querySearch > 0 && this.opts.clinics && this.opts.clinics.length > 0 && !this.showAllClinics) {
+            if (this.$store.getters['services/get'].querySearch > 0 && this.opts.clinics && this.opts.clinics.length > 0) {
+              const RENDER_MARKER_DELAY_IN_SECONDS = 2000;
               this.resetInteractiveMode();
               this.interactive.clinics = this.opts.clinics;
-              setTimeout(() => {
-                this.resetClinicMarkers();
-              this.showClinicMarkers();
-              this.filterMarkerByDistance();
-              this.$store.dispatch('services/doneQuerySearch');
-            }, 2000);
-
+              if (this.showAllClinics) {
+                setTimeout(() => {
+                  this.calculateDistance();
+                  this.resetClinicMarkers();
+                  this.showClinicMarkers();
+                  this.$store.dispatch('services/doneQuerySearch');
+                }, RENDER_MARKER_DELAY_IN_SECONDS);
+              } else {
+                setTimeout(() => {
+                  this.calculateDistance();
+                  this.resetClinicMarkers();
+                  this.showClinicMarkers();
+                  this.filterMarkerByDistance();
+                  this.$store.dispatch('services/doneQuerySearch');
+                }, RENDER_MARKER_DELAY_IN_SECONDS);
+              }
             }
           }
         }
@@ -191,30 +206,48 @@
       },
 
       listFilterClinics() {
-        this.opts = this.$props.options;
-        this.interactive.clinics = this.opts.clinics;
         return this.interactive.clinics;
       },
 
       showServicesFilterDialog() {
         return this.$store.getters['services/get'].show;
       },
+
+      maxDistance() {
+        if (this.currentLocation.lat > 0) {
+          this.interactive.clinics = this.opts.clinics;
+          this.calculateDistance();
+          const maxDistance = this.interactive.maxDistance > 0 ? Math.round(Math.round(this.interactive.maxDistance)/1000) + 1 : 100;
+          if (maxDistance == 1) {
+            this.$store.dispatch('services/show', false);
+            this.setCurrentLocation();
+            setTimeout(() => {
+              this.$store.dispatch('services/show', true);
+            }, 2000);
+          }
+
+          return maxDistance;
+        } else {
+          this.interactive.clinics = this.opts.clinics;
+          this.$store.dispatch('services/show', false);
+          this.setCurrentLocation();
+          setTimeout(() => {
+            this.$store.dispatch('services/show', true);
+          }, 2000);
+          if (!this.showCurrentLocationError) {
+            this.$clipicker.error('Current location not yet found! Please wait...');
+            this.showCurrentLocationError = true;
+          }
+
+        }
+
+      }
     },
 
     watch: {
-      showAllClinics(isShowAllClinics) {
-        if (!this.isSingleMode()) {
-          if (isShowAllClinics) {
-            this.opts = this.$props.options;
-            this.resetInteractiveMode();
-            this.interactive.clinics = this.opts.clinics;
-            this.$store.dispatch('services/querySearch');
-            setTimeout(() => {
-              this.resetClinicMarkers();
-            this.showClinicMarkers();
-            this.$store.dispatch('services/doneQuerySearch');
-          }, 2000);
-          }
+      currentLocation(value) {
+        if (value.lat) {
+          this.calculateDistance();
         }
       }
     },
@@ -285,15 +318,14 @@
         this.map.locate({maxZoom: 16});
         this.map.on('locationfound', (e) => {
           const currentLocationIcon = this.L.icon.pulse({iconSize:[20,20],color:'#487edc'});
-        if (this.currentPlaceMarker != null) {
-          this.currentPlaceMarker.remove();
-        }
-        this.currentLocation = e.latlng;
-        this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
-        this.map.setView(e.latlng, this.defaultZoom);
-
-
-      }, this);
+          if (this.currentPlaceMarker != null) {
+            this.currentPlaceMarker.remove();
+          }
+          this.currentLocation = e.latlng;
+          this.calculateDistance();
+          this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
+          this.map.setView(e.latlng, this.defaultZoom);
+        }, this);
       },
 
 
@@ -301,12 +333,12 @@
         this.map.locate({maxZoom: 16});
         this.map.on('locationfound', (e) => {
           this.map.flyTo(e.latlng, 16);
-        const currentLocationIcon = this.L.icon.pulse({iconSize:[20,20],color:'#487edc'});
-        if (this.currentPlaceMarker != null) {
-          this.currentPlaceMarker.remove();
-        }
-        this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
-      }, this);
+          const currentLocationIcon = this.L.icon.pulse({iconSize:[20,20],color:'#487edc'});
+          if (this.currentPlaceMarker != null) {
+            this.currentPlaceMarker.remove();
+          }
+          this.currentPlaceMarker = this.L.marker(e.latlng, { icon: currentLocationIcon }).addTo(this.map);
+        }, this);
 
         evt.stopPropagation();
       },
@@ -392,7 +424,6 @@
       // init interactive mode behavior
       initInteractiveMode() {
         this.interactive.clinics = this.opts.clinics;
-        this.showClinicMarkers();
       },
 
       resetInteractiveMode() {
@@ -406,7 +437,7 @@
       showClinicMarkers() {
         this.interactive.clinics.map(clinic => {
           clinic.marker = this.createMarker([clinic.lat, clinic.lng], clinic);
-      });
+        });
       },
 
       resetClinicMarkers() {
@@ -416,9 +447,9 @@
 
         this.interactive.clinics.map(clinic => {
           if (clinic.marker) {
-          clinic.marker.remove();
-        }
-      });
+            clinic.marker.remove();
+          }
+        });
       },
 
       getDirections(clinicDestination) {
@@ -455,22 +486,30 @@
       },
 
       filterMarkerByDistance() {
+        const maxDistance = this.$store.getters['services/get'].filter.distance.max * 1000; // in meters
         this.interactive.clinics.map(clinic => {
-          clinic.distance = this.currentLocation.distanceTo(this.L.latLng(clinic.lat, clinic.lng));
-      })
-        const TOP_SIZE = 5;
-        const topNearestClinics = this.interactive.clinics.sort((a, b) => a.distance - b.distance).slice(0, this.interactive.clinics.length > TOP_SIZE ? TOP_SIZE : this.interactive.clinics.length);
-
-        this.interactive.clinics.map(clinic => {
-          const hasFound = topNearestClinics.filter(nearestClinic => clinic.id == nearestClinic.id).length > 0;
-        if (!hasFound) {
-          if (clinic.marker) {
-            clinic.marker.remove();
-          }
-        }
-      })
+           if (maxDistance < clinic.distance) {
+             if (clinic.marker) {
+               clinic.marker.remove();
+             }
+           }
+        })
 
       },
+
+      queryAllClinics() {
+        this.$store.dispatch('services/querySearchAll');
+        this.showAllClinics = true;
+      },
+
+      calculateDistance() {
+        this.interactive.clinics.map(clinic => {
+          clinic.distance = this.currentLocation.distanceTo(this.L.latLng(clinic.lat, clinic.lng));
+        })
+        this.interactive.clinics = this.interactive.clinics.sort((a, b) => a.distance - b.distance);
+        this.interactive.maxDistance = this.interactive.clinics && this.interactive.clinics.length > 0 ? this.interactive.clinics[this.interactive.clinics.length - 1].distance : 1;
+      },
+
 
       // end multiple mode ***************************************************************************************************************************************************
 
@@ -478,6 +517,11 @@
         this.showAllClinics = false;
         this.$store.dispatch('services/show', true);
       },
+
+      round(value, decimals) {
+        return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+      }
+
     }
   }
 </script>
