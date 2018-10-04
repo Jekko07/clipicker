@@ -22,7 +22,7 @@
                   </if>
                 </where>
               union
-                select id from clinics where is_admin = 0 and (all_spec_services = 1 or all_symptom_services = 1)
+                select id from clinics where is_admin = 0 and (all_spec_services = 1 and all_symptom_services = 1)
     ) clinicFiltered)
 
   </select>
