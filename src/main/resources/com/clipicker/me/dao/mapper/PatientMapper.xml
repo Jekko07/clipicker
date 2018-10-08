@@ -7,23 +7,25 @@
     from clinics
     where is_admin = 0 and status = 1
     and id IN (select distinct clinic_id
-    from (select clinic_id
+    from (
+          select id clinic_id from clinics where is_admin = 0 and (all_spec_services = 1 and all_symptom_services = 1)
+          <if test="specIdList != null and !specIdList.empty">
+            union
+            select clinic_id
               from clinic_spec_service
-                <where>
-                  <if test="specIdList != null and !specIdList.empty">
-                    spec_id in <foreach item="item" index="index" collection="specIdList" open="(" separator="," close=")">#{item}</foreach>
-                  </if>
-                </where>
-              union
-                select clinic_id from clinic_symptom_service
-                <where>
-                  <if test="symptomIdList != null and !symptomIdList.empty">
-                    symptom_id in <foreach item="item" index="index" collection="symptomIdList" open="(" separator="," close=")">#{item}</foreach>
-                  </if>
-                </where>
-              union
-                select id from clinics where is_admin = 0 and (all_spec_services = 1 and all_symptom_services = 1)
+             where spec_id in <foreach item="item" index="index" collection="specIdList" open="(" separator="," close=")">#{item}</foreach>
+          </if>
+          <if test="symptomIdList != null and !symptomIdList.empty">
+            union
+              select clinic_id from clinic_symptom_service
+                where symptom_id in <foreach item="item" index="index" collection="symptomIdList" open="(" separator="," close=")">#{item}</foreach>
+          </if>
+          <if test="specIdList == null and symptomIdList == null">
+            union select clinic_id from clinic_spec_service
+            union select clinic_id from clinic_symptom_service
+          </if>
     ) clinicFiltered)
 
   </select>
 </mapper>
+
