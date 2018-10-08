@@ -20,7 +20,7 @@
       select clinic_id from clinic_symptom_service
       where symptom_id in <foreach item="item" index="index" collection="symptomIdList" open="(" separator="," close=")">#{item}</foreach>
     </if>
-    <if test="specIdList.empty and symptomIdList.empty">
+    <if test="specIdList == null and symptomIdList == null">
       union select clinic_id from clinic_spec_service
       union select clinic_id from clinic_symptom_service
     </if>
