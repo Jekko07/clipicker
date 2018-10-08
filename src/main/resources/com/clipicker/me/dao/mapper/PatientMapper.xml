@@ -7,7 +7,6 @@
     from clinics
     where is_admin = 0 and status = 1
     and id IN (select distinct clinic_id
-<<<<<<< HEAD
     from (select clinic_id
               from clinic_spec_service
                 <where>
@@ -24,7 +23,6 @@
                 </where>
               union
                 select id from clinics where is_admin = 0 and (all_spec_services = 1 and all_symptom_services = 1)
-=======
     from (
     select id from clinics where is_admin = 0 and (all_spec_services = 1 and all_symptom_services = 1)
     <if test="specIdList != null and !specIdList.empty">
@@ -42,7 +40,6 @@
       union select clinic_id from clinic_spec_service
       union select clinic_id from clinic_symptom_service
     </if>
->>>>>>> the-master
     ) clinicFiltered)
 
   </select>
